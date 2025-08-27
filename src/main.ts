@@ -4,6 +4,9 @@ import { fastifySwaggerUi } from '@fastify/swagger-ui'
 import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProvider } from 'fastify-type-provider-zod'
 
 import { appRouter } from './routes'
+import { AccountRepository } from './repositories/accountRepository'
+
+export const accountRepository = new AccountRepository()
 
 const fastify = Fastify({}).withTypeProvider<ZodTypeProvider>()
 
