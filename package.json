@@ -1,15 +1,19 @@
 {
-  "name": "api",
+  "name": "API_BANKING",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "main.ts",
   "repository": "git@github.com:diegojimenes/api-bank.git",
   "author": "<lligaskate@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "tsx watch main.ts"
+    "dev": "tsx watch src/main.ts"
   },
   "dependencies": {
-    "fastify": "^5.5.0"
+    "@fastify/swagger": "^9.5.1",
+    "@fastify/swagger-ui": "^5.2.3",
+    "fastify": "^5.5.0",
+    "fastify-type-provider-zod": "^5.0.3",
+    "zod": "^4.1.4"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
