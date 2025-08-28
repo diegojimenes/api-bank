@@ -9,6 +9,7 @@ export const appRouter = async (app: FastifyTypeInstance) => {
         schema: {
             description: "route to restart the base",
             tags: ["banking"],
+            body: z.object({})
         }
     }, async function handler(_, reply) {
         resetDB()
