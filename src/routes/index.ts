@@ -1,17 +1,17 @@
 import { z } from 'zod'
 import { FastifyTypeInstance } from '../types'
-import { restDB } from '../useCases/restDB'
+import { resetDB } from '../useCases/resetDB'
 import { getBalance } from '../useCases/getBalance'
 import { event } from '../useCases/event'
 
 export const appRouter = async (app: FastifyTypeInstance) => {
-    app.post('/rest', {
+    app.post('/reset', {
         schema: {
             description: "route to restart the base",
             tags: ["banking"],
         }
     }, async function handler(_, reply) {
-        restDB()
+        resetDB()
         return reply.status(200).send("OK")
     })
 

@@ -1,6 +1,6 @@
 import { accountRepository } from "../main"
 
-export const restDB = () => {
+export const resetDB = () => {
     accountRepository.reset()
 
     return
