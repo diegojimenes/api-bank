@@ -20,13 +20,13 @@ export const appRouter = async (app: FastifyTypeInstance) => {
             tags: ["banking"],
             description: "route to check user balance",
             querystring: z.object({
-                id: z.string()
+                account_id: z.string()
             })
         }
     }, async function handler(request, reply) {
         try {
-            const { id } = request.query
-            const balance = getBalance({ id })
+            const { account_id } = request.query
+            const balance = getBalance({ id: account_id })
             return reply.status(200).send(balance)
         } catch (err) {
             if (err === "account does not exist") {
