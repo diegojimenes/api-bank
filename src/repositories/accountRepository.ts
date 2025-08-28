@@ -21,10 +21,10 @@ export class AccountRepository {
     }
 
     createAccount({ id, balance }: { id: string, balance?: number }) {
-        this.base.push({
+        this.base = [...this.base, {
             id,
             balance: balance ? balance : 0
-        })
+        }]
     }
 
     getBalance({ id }: { id: string }) {
@@ -46,11 +46,13 @@ export class AccountRepository {
             return { destination: { id: destination, balance: amount } }
         }
 
-        this.base = this.base.map((acc) =>
+        const newBase = this.base.map((acc) =>
             acc.id === destination
                 ? { ...acc, balance: acc.balance + amount }
                 : acc
         )
+
+        this.base = newBase
 
         const accountUpdated = this.findAccount({ id: destination })
         return { destination: { id: destination, balance: accountUpdated?.balance } }
@@ -67,11 +69,13 @@ export class AccountRepository {
             throw ERR_OPERATION_DENIED
         }
 
-        this.base = this.base.map((acc) =>
+        const newBase = this.base = this.base.map((acc) =>
             acc.id === origin
                 ? { ...acc, balance: acc.balance - amount }
                 : acc
         )
+
+        this.base = newBase
 
         const accountUpdated = this.findAccount({ id: origin })
         return { origin: { id: origin, balance: accountUpdated?.balance } }
