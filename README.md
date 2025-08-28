@@ -50,7 +50,7 @@ A documentação Swagger ficará disponível em:
 
 ## Endpoints
 
-### **POST /rest**
+### **POST /reset**
 
 Reseta a base de dados.
 
