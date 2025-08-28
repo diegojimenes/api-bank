@@ -10,6 +10,19 @@ export const accountRepository = new AccountRepository()
 
 const fastify = Fastify({}).withTypeProvider<ZodTypeProvider>()
 
+fastify.addContentTypeParser('application/json', { parseAs: 'string' }, function (_req, body: any, done) {
+    if (!body || body.trim() === '') {
+        return done(null, {})
+    }
+    try {
+        const json = JSON.parse(body)
+        done(null, json)
+    } catch (err) {
+        err.statusCode = 400
+        done(err, undefined)
+    }
+})
+
 fastify.setValidatorCompiler(validatorCompiler)
 fastify.setSerializerCompiler(serializerCompiler)
 
