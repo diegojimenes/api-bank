@@ -15,7 +15,7 @@ export const appRouter = async (app: FastifyTypeInstance) => {
         return reply.status(200).send("OK")
     })
 
-    app.post('/balance', {
+    app.get('/balance', {
         schema: {
             tags: ["banking"],
             description: "route to check user balance",
