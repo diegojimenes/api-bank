@@ -1,3 +1,4 @@
+import { ERR_ACCOUNT_NOT_EXIST, ERR_OPERATION_DENIED } from '../constants';
 import { AccountRepository } from './accountRepository';
 
 describe('Tests for the accountRepository class', () => {
@@ -51,7 +52,7 @@ describe('Tests for the accountRepository class', () => {
     });
 
     test('should throw an exception when withdrawing from a non-existing account', () => {
-        expect(() => accountRepository.withdraw({ origin: '200', amount: 10 })).toThrow("account does not exist");
+        expect(() => accountRepository.withdraw({ origin: '200', amount: 10 })).toThrow(ERR_ACCOUNT_NOT_EXIST);
     });
 
     test('should withdraw from an existing account with sufficient balance', () => {
@@ -69,7 +70,7 @@ describe('Tests for the accountRepository class', () => {
     test('should not withdraw from an account with insufficient balance', () => {
         accountRepository.createAccount({ id: '100', balance: 5 });
 
-        expect(() => accountRepository.withdraw({ origin: '100', amount: 10 })).toThrow("operation denied due to lack of balance");
+        expect(() => accountRepository.withdraw({ origin: '100', amount: 10 })).toThrow(ERR_OPERATION_DENIED);
     });
 
 
@@ -79,8 +80,8 @@ describe('Tests for the accountRepository class', () => {
         const result = accountRepository.transfer({ origin: '100', destination: '300', amount: 15 });
 
         expect(result).toEqual({
-            origin: { origin: { id: '100', balance: 0 } },
-            destination: { destination: { id: '300', balance: 15 } }
+            origin: { id: '100', balance: 0 },
+            destination: { id: '300', balance: 15 }
         });
 
         const originAccount = accountRepository.findAccount({ id: '100' });
@@ -93,12 +94,12 @@ describe('Tests for the accountRepository class', () => {
     });
 
     test('should throw an exception when trying to transfer from a non-existing account', () => {
-        expect(() => accountRepository.transfer({ origin: '200', amount: 15, destination: '300' })).toThrow("account does not exist");
+        expect(() => accountRepository.transfer({ origin: '200', amount: 15, destination: '300' })).toThrow(ERR_ACCOUNT_NOT_EXIST);
     });
 
     test('should not transfer from an account with insufficient balance', () => {
         accountRepository.createAccount({ id: '100', balance: 5 });
 
-        expect(() => accountRepository.transfer({ origin: '100', amount: 15, destination: '300' })).toThrow("operation denied due to lack of balance");
+        expect(() => accountRepository.transfer({ origin: '100', amount: 15, destination: '300' })).toThrow(ERR_OPERATION_DENIED);
     });
 });

@@ -1,3 +1,5 @@
+import { ERR_ACCOUNT_NOT_EXIST, ERR_OPERATION_DENIED } from "../constants"
+
 interface IAccount {
     id: string,
     balance: number
@@ -15,22 +17,14 @@ export class AccountRepository {
     }
 
     findAccount({ id }: { id: string }) {
-        const data = this.base.find((account) => {
-            if (account.id === id) {
-                return account
-            }
-        })
-
-        return data
+        return this.base.find((account) => account.id === id)
     }
 
     createAccount({ id, balance }: { id: string, balance?: number }) {
         this.base.push({
-            id: id,
+            id,
             balance: balance ? balance : 0
         })
-
-        return
     }
 
     getBalance({ id }: { id: string }) {
@@ -38,8 +32,7 @@ export class AccountRepository {
 
         if (!account) {
             this.createAccount({ id })
-
-            throw "account does not exist"
+            throw ERR_ACCOUNT_NOT_EXIST
         }
 
         return account.balance
@@ -50,25 +43,16 @@ export class AccountRepository {
 
         if (!account) {
             this.createAccount({ id: destination, balance: amount })
-
             return { destination: { id: destination, balance: amount } }
         }
 
-        const newBase = this.base.map((account) => {
-            if (account.id === destination) {
-                return {
-                    ...account,
-                    balance: account.balance + amount
-                }
-            }
-
-            return account
-        })
-
-        this.base = newBase
+        this.base = this.base.map((acc) =>
+            acc.id === destination
+                ? { ...acc, balance: acc.balance + amount }
+                : acc
+        )
 
         const accountUpdated = this.findAccount({ id: destination })
-
         return { destination: { id: destination, balance: accountUpdated?.balance } }
     }
 
@@ -76,28 +60,20 @@ export class AccountRepository {
         const account = this.findAccount({ id: origin })
 
         if (!account) {
-            throw "account does not exist"
+            throw ERR_ACCOUNT_NOT_EXIST
         }
 
         if (account.balance < amount) {
-            throw "operation denied due to lack of balance"
+            throw ERR_OPERATION_DENIED
         }
 
-        const newBase = this.base.map((account) => {
-            if (account.id === origin) {
-                return {
-                    ...account,
-                    balance: account.balance - amount
-                }
-            }
-
-            return account
-        })
-
-        this.base = newBase
+        this.base = this.base.map((acc) =>
+            acc.id === origin
+                ? { ...acc, balance: acc.balance - amount }
+                : acc
+        )
 
         const accountUpdated = this.findAccount({ id: origin })
-
         return { origin: { id: origin, balance: accountUpdated?.balance } }
     }
 
@@ -105,23 +81,21 @@ export class AccountRepository {
         const accountOrigin = this.findAccount({ id: origin })
 
         if (!accountOrigin) {
-            throw "account does not exist"
+            throw ERR_ACCOUNT_NOT_EXIST
         }
 
         if (accountOrigin.balance < amount) {
-            throw "operation denied due to lack of balance"
+            throw ERR_OPERATION_DENIED
         }
 
-        const originNewBalance = this.withdraw({ origin: origin, amount })
+        const originNewBalance = this.withdraw({ origin, amount })
 
-        if (typeof originNewBalance == "object") {
-            const destinationNewBalance = this.deposit({ destination: destination, amount })
-
+        if (typeof originNewBalance === "object") {
+            const destinationNewBalance = this.deposit({ destination, amount })
             return {
                 ...originNewBalance,
                 ...destinationNewBalance
             }
         }
-
     }
 }
