@@ -118,8 +118,8 @@ export class AccountRepository {
             const destinationNewBalance = this.deposit({ destination: destination, amount })
 
             return {
-                origin: originNewBalance,
-                destination: destinationNewBalance
+                ...originNewBalance,
+                ...destinationNewBalance
             }
         }
 
