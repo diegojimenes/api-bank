@@ -1,53 +1,26 @@
-import { deposit } from "./deposit"
-import { transfer } from "./transfer"
-import { withdraw } from "./withdraw"
+import { DepositStrategy, EventStrategy, TransferStrategy, WithdrawStrategy } from "./EventStrategy";
 
-type eventType = "deposit" | "withdraw" | "transfer"
+type eventType = "deposit" | "withdraw" | "transfer";
+
+const strategies: Record<eventType, EventStrategy> = {
+    deposit: new DepositStrategy(),
+    withdraw: new WithdrawStrategy(),
+    transfer: new TransferStrategy(),
+};
 
 export const event = ({
     type,
     origin,
     destination,
-    amount
+    amount,
 }: {
-    type: eventType,
-    origin?: string,
-    destination?: string,
-    amount: number
+    type: eventType;
+    origin?: string;
+    destination?: string;
+    amount: number;
 }) => {
-    try {
-        switch (type) {
-            case "deposit":
-                if (destination) {
-                    const balance = deposit({ destination: destination, amount })
+    const strategy = strategies[type];
+    if (!strategy) throw "event not found";
 
-                    return balance
-                }
-
-                throw 'destination required'
-
-            case "withdraw":
-                if (origin) {
-                    const balance = withdraw({ origin: origin, amount })
-
-                    return balance
-                }
-
-                throw 'origin required'
-
-            case "transfer":
-                if (destination && origin) {
-                    const balance = transfer({ destination: destination, origin: origin, amount })
-
-                    return balance
-                }
-
-                throw 'origin and destination required'
-
-            default:
-                throw 'event not found'
-        }
-    } catch (err) {
-        throw err
-    }
-}
+    return strategy.execute({ origin, destination, amount });
+};
