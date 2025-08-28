@@ -29,7 +29,7 @@ fastify.register(fastifySwaggerUi, {
 
 fastify.register(appRouter)
 
-fastify.listen({ port: 3000 })
+fastify.listen({ host: "0.0.0.0", port: 3000 })
     .then(() => {
         console.log(`
 API running on http://localhost:3000
