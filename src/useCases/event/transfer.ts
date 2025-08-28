@@ -1,5 +1,5 @@
-import { ERR_ACCOUNT_NOT_EXIST } from "../../../constants"
-import { accountRepository } from "../../../main"
+import { ERR_ACCOUNT_NOT_EXIST } from "../../constants"
+import { accountRepository } from "../../main"
 
 export const transfer = ({ origin, destination, amount }: { origin: string, destination: string, amount: number }) => {
     try {

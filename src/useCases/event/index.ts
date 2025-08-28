@@ -1,21 +1,8 @@
-import { DepositStrategy, TransferStrategy, WithdrawStrategy } from "./EventStrategy";
-
-export interface EventStrategy {
-    execute(params: {
-        origin?: string;
-        destination?: string;
-        amount: number;
-    }): any;
-}
+import { deposit } from "./deposit"
+import { transfer } from "./transfer"
+import { withdraw } from "./withdraw"
 
 type eventType = "deposit" | "withdraw" | "transfer"
-
-const strategies: Record<eventType, EventStrategy> = {
-    deposit: new DepositStrategy(),
-    withdraw: new WithdrawStrategy(),
-    transfer: new TransferStrategy(),
-};
-
 
 export const event = ({
     type,
@@ -29,10 +16,37 @@ export const event = ({
     amount: number
 }) => {
     try {
-        const strategy = strategies[type];
-        if (!strategy) throw "event not found";
+        switch (type) {
+            case "deposit":
+                if (destination) {
+                    const balance = deposit({ destination: destination, amount })
 
-        return strategy.execute({ origin, destination, amount });
+                    return balance
+                }
+
+                throw 'destination required'
+
+            case "withdraw":
+                if (origin) {
+                    const balance = withdraw({ origin: origin, amount })
+
+                    return balance
+                }
+
+                throw 'origin required'
+
+            case "transfer":
+                if (destination && origin) {
+                    const balance = transfer({ destination: destination, origin: origin, amount })
+
+                    return balance
+                }
+
+                throw 'origin and destination required'
+
+            default:
+                throw 'event not found'
+        }
     } catch (err) {
         throw err
     }
