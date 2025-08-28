@@ -2,13 +2,15 @@ import { deposit } from "./deposit"
 import { transfer } from "./transfer"
 import { withdraw } from "./withdraw"
 
+type eventType = "deposit" | "withdraw" | "transfer"
+
 export const event = ({
     type,
     origin,
     destination,
     amount
 }: {
-    type: "deposit" | "withdraw" | "transfer",
+    type: eventType,
     origin?: string,
     destination?: string,
     amount: number

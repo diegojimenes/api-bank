@@ -3,6 +3,7 @@ import { FastifyTypeInstance } from '../types'
 import { resetDB } from '../useCases/resetDB'
 import { getBalance } from '../useCases/getBalance'
 import { event } from '../useCases/event'
+import { ERR_ACCOUNT_NOT_EXIST } from '../constants'
 
 export const appRouter = async (app: FastifyTypeInstance) => {
     app.post('/reset', {
@@ -29,7 +30,7 @@ export const appRouter = async (app: FastifyTypeInstance) => {
             const balance = getBalance({ id: account_id })
             return reply.status(200).send(balance)
         } catch (err) {
-            if (err === "account does not exist") {
+            if (err === ERR_ACCOUNT_NOT_EXIST) {
                 reply.status(404).send(0)
             }
         }
